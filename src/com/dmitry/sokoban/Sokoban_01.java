@@ -6,5 +6,6 @@ public class Sokoban_01 {
 		// TODO Auto-generated method stub
 		System.out.println("f");
 		System.out.println("h");
+		System.out.println("g");
 	}
 }
