@@ -11,6 +11,7 @@ public class Sokoban_01 {
 		System.out.println("g");
 		System.out.println("k");
 		System.out.println("d");
+		System.out.println("m");
 
 	}
 }
