@@ -7,5 +7,6 @@ public class Sokoban_01 {
 		System.out.println("f");
 		System.out.println("h");
 		System.out.println("g");
+		System.out.println("k");
 	}
 }
