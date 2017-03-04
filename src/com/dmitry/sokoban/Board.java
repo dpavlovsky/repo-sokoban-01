@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Board {
 
-	private static final String FILENAME = "e:\\Work0\\workspace\\Sokoban_01\\src\\com\\dmitry\\sokoban\\board_test_02.txt";
+	private static final String FILENAME = "d:\\Work0\\workspace\\Sokoban_01\\src\\com\\dmitry\\sokoban\\board_test_05.txt";
 
 	// HashSet<Pair<Byte, Byte>> reachable = new HashSet<>();
 
@@ -110,7 +110,7 @@ public class Board {
 						moves.put(temp1, boxes);
 					}
 		}
-		
+
 		Position temp = fig.copy();
 
 		// if (positions.contains(fig))
@@ -154,7 +154,8 @@ public class Board {
 						// (fig.getData()[fig.y][fig.x] == 'c') ? 'a' : '0';
 						// fig.x = i;
 						// fig.y = j;
-						fig.getData()[j][i - 1] = (fig.getData()[j][i - 1] == 'a') ? 'b' : '1';
+						fig.getData()[j][i - 1] = (fig.getData()[j][i - 1] == 'a' || fig.getData()[j][i - 1] == 'c')
+								? 'b' : '1';
 						fig.getData()[j][i] = (fig.getData()[j][i] == 'b') ? 'c' : 'm';
 						fig.getData()[j][i + 1] = (fig.getData()[j][i + 1] == 'c') ? 'c' : 'm';
 						fig.initReachable();
@@ -188,6 +189,49 @@ public class Board {
 					} else
 						direction.put('l', false);
 
+					// move up
+					if (direction.get('u') && j > 0 && j < fig.getData().length - 1
+							&& (fig.getData()[j - 1][i] == '0' || fig.getData()[j - 1][i] == 'a'
+									|| fig.getData()[j - 1][i] == 'c' || fig.getData()[j - 1][i] == 'm')
+							&& (fig.getData()[j + 1][i] == 'm' || fig.getData()[j + 1][i] == 'c')) {
+						// fig.getData()[fig.y][fig.x] =
+						// (fig.getData()[fig.y][fig.x] == 'c') ? 'a' : '0';
+						// fig.x = i;
+						// fig.y = j;
+						fig.getData()[j - 1][i] = (fig.getData()[j - 1][i] == 'a' || fig.getData()[j - 1][i] == 'c')
+								? 'b' : '1';
+						fig.getData()[j][i] = (fig.getData()[j][i] == 'b') ? 'c' : 'm';
+						fig.getData()[j + 1][i] = (fig.getData()[j + 1][i] == 'c') ? 'c' : 'm';
+						fig.initReachable();
+						fig.fillReachable(j, i);
+						// j--;
+						if (fig.solved()) {
+							System.out.println(fig.toString());
+							// l = r = u = d = false;
+							return;
+						}
+
+						// move(l, r, u, d);
+						move();
+
+						if (fig.solved()) {
+							System.out.println(temp.toString());
+							// l = r = u = d = false;
+							return;
+						}
+						// u = false;
+						// j++;
+						// fig.x = i;
+						// fig.y = (byte)(j+1);
+						fig = temp;
+						direction.put('u', false);
+						// fig.x = temp.x;
+						// fig.y = temp.y;
+						// fig = new Position(temp.getData());
+						// fig.setReachable(temp.getReachable());
+					} else
+						direction.put('u', false);
+
 					// move right
 					if (direction.get('r') && i > 0 && i < fig.getData()[0].length - 1
 							&& (fig.getData()[j][i + 1] == '0' || fig.getData()[j][i + 1] == 'a'
@@ -197,7 +241,8 @@ public class Board {
 						// (fig.getData()[fig.y][fig.x] == 'c') ? 'a' : '0';
 						// fig.x = i;
 						// fig.y = j;
-						fig.getData()[j][i + 1] = (fig.getData()[j][i + 1] == 'a') ? 'b' : '1';
+						fig.getData()[j][i + 1] = (fig.getData()[j][i + 1] == 'a' || fig.getData()[j][i + 1] == 'c')
+								? 'b' : '1';
 						fig.getData()[j][i] = (fig.getData()[j][i] == 'b') ? 'c' : 'm';
 						fig.getData()[j][i - 1] = (fig.getData()[j][i - 1] == 'c') ? 'c' : 'm';
 						fig.initReachable();
@@ -231,48 +276,6 @@ public class Board {
 					} else
 						direction.put('r', false);
 
-					// move up
-					if (direction.get('u') && j > 0 && j < fig.getData().length - 1
-							&& (fig.getData()[j - 1][i] == '0' || fig.getData()[j - 1][i] == 'a'
-									|| fig.getData()[j - 1][i] == 'c' || fig.getData()[j - 1][i] == 'm')
-							&& (fig.getData()[j + 1][i] == 'm' || fig.getData()[j + 1][i] == 'c')) {
-						// fig.getData()[fig.y][fig.x] =
-						// (fig.getData()[fig.y][fig.x] == 'c') ? 'a' : '0';
-						// fig.x = i;
-						// fig.y = j;
-						fig.getData()[j - 1][i] = (fig.getData()[j - 1][i] == 'a') ? 'b' : '1';
-						fig.getData()[j][i] = (fig.getData()[j][i] == 'b') ? 'c' : 'm';
-						fig.getData()[j + 1][i] = (fig.getData()[j + 1][i] == 'c') ? 'c' : 'm';
-						fig.initReachable();
-						fig.fillReachable(j, i);
-						// j--;
-						if (fig.solved()) {
-							System.out.println(fig.toString());
-							// l = r = u = d = false;
-							return;
-						}
-
-						// move(l, r, u, d);
-						move();
-
-						if (fig.solved()) {
-							System.out.println(temp.toString());
-							// l = r = u = d = false;
-							return;
-						}
-						// u = false;
-						// j++;
-						// fig.x = i;
-						// fig.y = (byte)(j+1);
-						fig = temp;
-						direction.put('u', false);
-						// fig.x = temp.x;
-						// fig.y = temp.y;
-						// fig = new Position(temp.getData());
-						// fig.setReachable(temp.getReachable());
-					} else
-						direction.put('u', false);
-
 					// move down
 					if (direction.get('d') && j > 0 && j < fig.getData().length - 1
 							&& (fig.getData()[j + 1][i] == '0' || fig.getData()[j + 1][i] == 'a'
@@ -282,7 +285,8 @@ public class Board {
 						// (fig.getData()[fig.y][fig.x] == 'c') ? 'a' : '0';
 						// fig.x = i;
 						// fig.y = j;
-						fig.getData()[j + 1][i] = (fig.getData()[j + 1][i] == 'a') ? 'b' : '1';
+						fig.getData()[j + 1][i] = (fig.getData()[j + 1][i] == 'a' || fig.getData()[j + 1][i] == 'c')
+								? 'b' : '1';
 						fig.getData()[j][i] = (fig.getData()[j][i] == 'b') ? 'c' : 'm';
 						fig.getData()[j - 1][i] = (fig.getData()[j - 1][i] == 'c') ? 'c' : 'm';
 						fig.initReachable();
