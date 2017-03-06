@@ -61,6 +61,7 @@ final public class Position {
 			return false;
 
 		byte i = -1, j = -1;
+		
 		// outer1:
 		// for (j = 0; j < m; j++)
 		// for (i = 0; i < n; i++)
@@ -81,7 +82,9 @@ final public class Position {
 
 		for (j = 0; j < m; j++)
 			for (i = 0; i < n; i++)
-				if (data[j][i] != ((Position) o).data[j][i])
+				if (data[j][i] != ((Position) o).data[j][i] && 
+					(	data[j][i] < '1' || data[j][i] > '9' || 
+						((Position) o).data[j][i] < '1' ||	((Position) o).data[j][i] > '9'	))
 					return false;
 
 		return true;
@@ -94,14 +97,14 @@ final public class Position {
 		for (int i = 0; i < data.length; i++)
 			for (int j = 0; j < data[i].length; j++)
 				hc = 7 * hc + data[i][j] % 3;
-			
+
 		return hc;
 	}
 
 	public boolean solved() {
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < data[i].length; j++)
-				if (data[i][j] == '1' || data[i][j] == 'a' || data[i][j] == 'c')
+				if ((data[i][j] >= '1' && data[i][j] <= '9') || data[i][j] == 'a' || data[i][j] == 'c')
 					return false;
 		}
 		return true;
@@ -154,6 +157,7 @@ final public class Position {
 	// }
 	// }
 	// }
+	
 	public void initReachable() {
 		for (int k = 0; k < data.length; k++)
 			for (int l = 0; l < data[k].length; l++)

@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Board {
 
-	private static final String FILENAME = "d:\\Work0\\workspace\\Sokoban_01\\src\\com\\dmitry\\sokoban\\board_test_02.txt";
+	private static final String FILENAME = "d:\\Work0\\workspace\\Sokoban_01\\src\\com\\dmitry\\sokoban\\board_test_06.txt";
 
 	boolean solved = false;
 
