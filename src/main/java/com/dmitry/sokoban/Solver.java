@@ -1,30 +1,51 @@
-package com.dmitry.sokoban;
+package main.java.com.dmitry.sokoban;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Properties;
 
-public class Board {
+public class Solver {
 
-	private static final String FILENAME = "e:\\Work0\\workspace\\Sokoban_01\\src\\com\\dmitry\\sokoban\\board_17.txt";
-	private static final int RECDEPTH = 30;
+	private static Properties property;
+	private static String fname;
+	private static int depth;
+	private static int depth_limit;
+	private static boolean deadlocks;
+	private static boolean solved = false;
+	private static int step = 0;
+
+	private static HashMap<Position, HashMap<Pair<Byte, Byte>, HashMap<Character, Boolean>>> positions = new HashMap<>();
+
+	public static void Init() {
+
+		FileInputStream fis;
+		property = new Properties();
+
+		try {
+			fis = new FileInputStream("resources/config/config.properties");
+			property.load(fis);
+			fname = property.getProperty("mainFile");
+			depth_limit = Integer.parseInt(property.getProperty("depth_limit"));
+			deadlocks = Boolean.parseBoolean(property.getProperty("deadlocks"));
+		} catch (IOException e) {
+			System.err.println("Error: properties file not found");
+		}
+	}
 	
-//	static int depth = 0;
+	public static int getSteps() {
+		return step;
+	}
 
-	boolean solved = false;
-	int step=0;
-	int step2=0;
-	
-	HashMap<Position, HashMap<Pair<Byte, Byte>, HashMap<Character, Boolean>>> positions = new HashMap<>();
-
-	public Position getBoard() {
+	public static Position getBoard() {
 
 		Position pos = null;
 
-		try (BufferedReader br = new BufferedReader(new FileReader(FILENAME))) {
-			File f = new File(FILENAME);
+		try (BufferedReader br = new BufferedReader(new FileReader(fname))) {
+			File f = new File(fname);
 			String line = br.readLine();
 			byte x = (byte) line.length();
 			byte y = (byte) ((f.length() + 2) / (x + 2));
@@ -41,14 +62,12 @@ public class Board {
 		}
 
 		return pos;
-
 	}
 
-	public void move(Position p) {
-//		depth++;
-		System.out.println(step2++ + "\n" + 
-//depth + "\n"+ 
-				p.toString());
+	public static void move(Position p) {
+		depth++;
+		step++;
+		System.out.println(p.toString());
 
 		Position t2 = p.copy();
 		if (!positions.containsKey(t2)) {
@@ -79,7 +98,7 @@ public class Board {
 					direction = boxes.get(new Pair<Byte, Byte>(j, i));
 
 					// move left
-					if (direction.get('l') && i > 0 && i < t.getData()[0].length - 1
+					if (!solved && direction.get('l') && i > 0 && i < t.getData()[0].length - 1
 							&& (t.getData()[j][i - 1] == '0' || t.getData()[j][i - 1] == 'a'
 									|| t.getData()[j][i - 1] == 'c' || t.getData()[j][i - 1] == 'm')
 							&& (t.getData()[j][i + 1] == 'm' || t.getData()[j][i + 1] == 'c')) {
@@ -92,30 +111,26 @@ public class Board {
 						t.fillReachable(j, i);
 
 						if (t.solved()) {
-							System.out.println(step++);
+							System.out.println(depth);
 							System.out.println(t.toString());
 							solved = true;
-							return;
 						}
 
-						if (//depth < RECDEPTH && 
-//								!t.isDeadlock() &&
-								!positions.containsKey(t)) {
+						if (!solved && !(depth_limit > 0 && depth >= depth_limit) && !(deadlocks && t.isDeadlock())
+								&& !positions.containsKey(t)) {
 							move(t);
 							if (solved) {
-								System.out.println(step++);
+								System.out.println(depth);
 								System.out.println(t.toString());
-								return;
 							}
 						}
-
 						direction.put('l', false);
 						t = p.copy();
 					} else
 						direction.put('l', false);
 
 					// move up
-					if (direction.get('u') && j > 0 && j < t.getData().length - 1
+					if (!solved && direction.get('u') && j > 0 && j < t.getData().length - 1
 							&& (t.getData()[j - 1][i] == '0' || t.getData()[j - 1][i] == 'a'
 									|| t.getData()[j - 1][i] == 'c' || t.getData()[j - 1][i] == 'm')
 							&& (t.getData()[j + 1][i] == 'm' || t.getData()[j + 1][i] == 'c')) {
@@ -126,20 +141,17 @@ public class Board {
 						t.initReachable();
 						t.fillReachable(j, i);
 						if (t.solved()) {
-							System.out.println(step++);
+							System.out.println(depth);
 							System.out.println(t.toString());
 							solved = true;
-							return;
 						}
 
-						if (//depth < RECDEPTH && 
-//								!t.isDeadlock() &&
-								!positions.containsKey(t)) {
+						if (!solved && !(depth_limit > 0 && depth >= depth_limit) && !(deadlocks && t.isDeadlock())
+								&& !positions.containsKey(t)) {
 							move(t);
 							if (solved) {
-								System.out.println(step++);
+								System.out.println(depth);
 								System.out.println(t.toString());
-								return;
 							}
 						}
 						direction.put('u', false);
@@ -148,7 +160,7 @@ public class Board {
 						direction.put('u', false);
 
 					// move right
-					if (direction.get('r') && i > 0 && i < t.getData()[0].length - 1
+					if (!solved && direction.get('r') && i > 0 && i < t.getData()[0].length - 1
 							&& (t.getData()[j][i + 1] == '0' || t.getData()[j][i + 1] == 'a'
 									|| t.getData()[j][i + 1] == 'c' || t.getData()[j][i + 1] == 'm')
 							&& (t.getData()[j][i - 1] == 'm' || t.getData()[j][i - 1] == 'c')) {
@@ -159,20 +171,17 @@ public class Board {
 						t.initReachable();
 						t.fillReachable(j, i);
 						if (t.solved()) {
-							System.out.println(step++);
+							System.out.println(depth);
 							System.out.println(t.toString());
 							solved = true;
-							return;
 						}
 
-						if (//depth < RECDEPTH && 
-//								!t.isDeadlock() &&
-								!positions.containsKey(t)) {
+						if (!solved && !(depth_limit > 0 && depth >= depth_limit) && !(deadlocks && t.isDeadlock())
+								&& !positions.containsKey(t)) {
 							move(t);
 							if (solved) {
-								System.out.println(step++);
+								System.out.println(depth);
 								System.out.println(t.toString());
-								return;
 							}
 						}
 
@@ -183,7 +192,7 @@ public class Board {
 						direction.put('r', false);
 
 					// move down
-					if (direction.get('d') && j > 0 && j < t.getData().length - 1
+					if (!solved && direction.get('d') && j > 0 && j < t.getData().length - 1
 							&& (t.getData()[j + 1][i] == '0' || t.getData()[j + 1][i] == 'a'
 									|| t.getData()[j + 1][i] == 'c' || t.getData()[j + 1][i] == 'm')
 							&& (t.getData()[j - 1][i] == 'm' || t.getData()[j - 1][i] == 'c')) {
@@ -194,20 +203,17 @@ public class Board {
 						t.initReachable();
 						t.fillReachable(j, i);
 						if (t.solved()) {
-							System.out.println(step++);
+							System.out.println(depth);
 							System.out.println(t.toString());
 							solved = true;
-							return;
 						}
 
-						if (//depth < RECDEPTH &&
-//								!t.isDeadlock() &&
-								!positions.containsKey(t)) {
+						if (!solved && !(depth_limit > 0 && depth >= depth_limit) && !(deadlocks && t.isDeadlock())
+								&& !positions.containsKey(t)) {
 							move(t);
 							if (solved) {
-								System.out.println(step++);
+								System.out.println(depth);
 								System.out.println(t.toString());
-								return;
 							}
 						}
 						direction.put('d', false);
@@ -217,6 +223,6 @@ public class Board {
 
 				}
 			}
-//		depth--;
+		depth--;
 	}
 }

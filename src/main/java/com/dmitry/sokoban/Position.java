@@ -1,9 +1,9 @@
-package com.dmitry.sokoban;
+package main.java.com.dmitry.sokoban;
 
 final public class Position {
 	private final int m; // number of rows
 	private final int n; // number of columns
-	private final char[][] data; // M-by-N array
+	private final char[][] data;
 
 	// create Position based on 2d array
 	public Position(char[][] data) {
@@ -41,7 +41,6 @@ final public class Position {
 		return s;
 	}
 
-	// does A = B exactly?
 	@Override
 	public boolean equals(Object o) {
 		// TODO Auto-generated method stub
@@ -132,7 +131,9 @@ final public class Position {
 	public boolean isDeadlock() {
 		for (int j = 0; j < data.length; j++) {
 			for (int i = 0; i < data[j].length; i++) {
+
 				if (data[j][i] == '1') {
+					// in the corner
 					if (data[j][i - 1] == 'x' && data[j + 1][i] == 'x')
 						return true;
 					if (data[j][i + 1] == 'x' && data[j + 1][i] == 'x')
@@ -141,9 +142,31 @@ final public class Position {
 						return true;
 					if (data[j][i + 1] == 'x' && data[j - 1][i] == 'x')
 						return true;
+
+				}
+
+				if (data[j][i] == '1' || data[j][i] == 'b') {
+					// 4 boxes together
+					if ((data[j][i + 1] == '1' || data[j][i + 1] == 'b')
+							&& (data[j + 1][i] == '1' || data[j + 1][i] == 'b')
+							&& (data[j + 1][i + 1] == '1' || data[j + 1][i + 1] == 'b') && (data[j][i] == '1'
+									|| data[j][i + 1] == '1' || data[j + 1][i] == '1' || data[j + 1][i + 1] == '1'))
+						return true;
+					// 2 boxes near wall
+					if ((data[j][i + 1] == '1' || data[j][i + 1] == 'b')
+							&& ((data[j + 1][i] == 'x' && data[j + 1][i + 1] == 'x')
+									|| (data[j - 1][i] == 'x' && data[j - 1][i + 1] == 'x'))
+							&& (data[j][i] == '1' || data[j][i + 1] == '1'))
+						return true;
+					if ((data[j + 1][i] == '1' || data[j + 1][i] == 'b')
+							&& ((data[j][i - 1] == 'x' && data[j + 1][i - 1] == 'x')
+									|| (data[j][i + 1] == 'x' && data[j + 1][i + 1] == 'x'))
+							&& (data[j][i] == '1' || data[j + 1][i] == '1'))
+						return true;
 				}
 			}
 		}
+
 		return false;
 	}
 }

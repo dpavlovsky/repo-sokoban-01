@@ -1,4 +1,4 @@
-package com.dmitry.sokoban;
+package main.java.com.dmitry.sokoban;
 
 public class Pair<X, Y> {
 
@@ -27,6 +27,8 @@ public class Pair<X, Y> {
 	public boolean equals(Object o) {
 		if (!(o instanceof Pair))
 			return false;
+		
+		@SuppressWarnings("unchecked")
 		Pair<X, Y> pairo = (Pair<X, Y>) o;
 		return this.x.equals(pairo.getX()) && this.y.equals(pairo.getY());
 	}
