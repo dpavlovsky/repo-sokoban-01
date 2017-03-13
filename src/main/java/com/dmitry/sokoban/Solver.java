@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class Solver {
-
+	// Variables
 	private static Properties property;
 	private static String fname;
 	private static int depth;
