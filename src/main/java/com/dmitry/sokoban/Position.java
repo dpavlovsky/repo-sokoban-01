@@ -129,11 +129,45 @@ final public class Position {
 	}
 
 	public boolean isDeadlock() {
-		for (int j = 0; j < data.length; j++) {
-			for (int i = 0; i < data[j].length; i++) {
-
+		for (int j = 0; j < data.length - 1; j++)
+			for (int i = 0; i < data[j].length - 1; i++) {
+				
+				char[][] s = {	{data[j][i],	data[j][i + 1]},
+								{data[j + 1][i],data[j + 1][i + 1]}	};
+				if(
+						(s[0][0]=='x' || s[0][0]=='1' || s[0][0]=='b') &&
+						(s[0][1]=='x' || s[0][1]=='1' || s[0][1]=='b') &&
+						(s[1][0]=='x' || s[1][0]=='1' || s[1][0]=='b') &&
+						(s[1][1]=='x' || s[1][1]=='1' || s[1][1]=='b') ) {
+					
+				}
+				else {
+					continue;
+				}
+				
+				
+				
+				int[][] a = new int[2][2];
+				for(int m=0;m<s.length;m++)
+					for(int n=0;n<s[m].length;n++) {						
+						switch(s[m][n]) {
+							case 'x': a[m][n]=0; break;
+							case 'b': a[m][n]=7; break;
+							case '1': a[m][n]=1;
+						}
+					}
+				
+				
+				
+				
+				
+				 
+				
+				
+				/*
+				// there is a box in current cell and this cell is not a goal
 				if (data[j][i] == '1') {
-					// in the corner
+					// is box in the corner?
 					if (data[j][i - 1] == 'x' && data[j + 1][i] == 'x')
 						return true;
 					if (data[j][i + 1] == 'x' && data[j + 1][i] == 'x')
@@ -142,29 +176,46 @@ final public class Position {
 						return true;
 					if (data[j][i + 1] == 'x' && data[j - 1][i] == 'x')
 						return true;
-
 				}
-
+				*/
+				
+				/*
+				// there is a box in current cell
 				if (data[j][i] == '1' || data[j][i] == 'b') {
-					// 4 boxes together
-					if ((data[j][i + 1] == '1' || data[j][i + 1] == 'b')
-							&& (data[j + 1][i] == '1' || data[j + 1][i] == 'b')
-							&& (data[j + 1][i + 1] == '1' || data[j + 1][i + 1] == 'b') && (data[j][i] == '1'
-									|| data[j][i + 1] == '1' || data[j + 1][i] == '1' || data[j + 1][i + 1] == '1'))
+					// four boxes forming a square
+					if (
+					// if at least one of four boxes in not in the goal
+					(data[j][i] == '1' || data[j][i + 1] == '1' || data[j + 1][i] == '1' || data[j + 1][i + 1] == '1')
+							&&
+							// right box
+							(data[j][i + 1] == '1' || data[j][i + 1] == 'b') &&
+							// bottom box
+							(data[j + 1][i] == '1' || data[j + 1][i] == 'b') &&
+							// right bottom box
+							(data[j + 1][i + 1] == '1' || data[j + 1][i + 1] == 'b'))
 						return true;
-					// 2 boxes near wall
-					if ((data[j][i + 1] == '1' || data[j][i + 1] == 'b')
-							&& ((data[j + 1][i] == 'x' && data[j + 1][i + 1] == 'x')
-									|| (data[j - 1][i] == 'x' && data[j - 1][i + 1] == 'x'))
-							&& (data[j][i] == '1' || data[j][i + 1] == '1'))
+					// two boxes near wall (can be either two stones or stone and another box)
+					if (
+							// there is a box to the right
+							(data[j][i + 1] == '1' || data[j][i + 1] == 'b') &&
+							// there is a "wall" on top
+							( 		
+									// wall on the top
+									((data[j - 1][i]=='x' && data[j - 1][i + 1]=='x') &&
+									// and one of the two boxes not in the goal
+									(data[j][i]=='1' || data[j][i+1]=='1')) ||
+									// box and stone are on the top
+									(((data[j - 1][i]=='1' || data[j - 1][i]=='b') && data[j - 1][i + 1]=='x') &&
+									// and one of the three boxes not in the goal
+									(data[j - 1][i]=='1' || data[j][i + 1] == '1' || data[j][i] == '1')) ||
+									// stone and box are on the top
+									((data[j - 1][i]=='x' && (data[j - 1][i + 1]=='1' || data[j - 1][i + 1]=='b')) &&
+									// and one of the three boxes not in the goal
+									(data[j - 1][i + 1]=='1' || data[j][i + 1]=='1' || data[j][i]=='1' ))
+							)
+						)
 						return true;
-					if ((data[j + 1][i] == '1' || data[j + 1][i] == 'b')
-							&& ((data[j][i - 1] == 'x' && data[j + 1][i - 1] == 'x')
-									|| (data[j][i + 1] == 'x' && data[j + 1][i + 1] == 'x'))
-							&& (data[j][i] == '1' || data[j + 1][i] == '1'))
-						return true;
-				}
-			}
+						*/
 		}
 
 		return false;
